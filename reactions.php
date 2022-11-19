@@ -1,33 +1,33 @@
 <?php 
     require 'includes/config.inc.php';
 
-    if (isset($_POST['user_id'])) {
+    if (isset($_POST['userid'])) {
         
-        $user_id = trim($_POST['user_id']);
+        $userid = trim($_POST['userid']);
         
-        if (isset($_POST['post_id'])) {
+        if (isset($_POST['postid'])) {
 
-            $post_id = trim($_POST['post_id']);
+            $postid = trim($_POST['postid']);
 
-            if (isset($_POST['post_id'])) {
+            if (isset($_POST['postid'])) {
                 $reaction = trim($_POST['reaction']);
 
-                $sql = "DELETE FROM reactions WHERE post_id = ? AND user_id = ?";
+                $sql = "DELETE FROM reactions WHERE postid = ? AND userid = ?";
                 $stmt = $conn -> prepare($sql);
-                $stmt -> bind_param('ss', $post_id, $user_id);
+                $stmt -> bind_param('ss', $postid, $userid);
                 $stmt -> execute();
 
                 if ($stmt) {
                     $num_likes = 0;
                     $num_dislikes = 0;
-                    $sql = "INSERT INTO reactions(user_id, post_id, reaction) VALUES(?, ?, ?)";
+                    $sql = "INSERT INTO reactions(userid, postid, reaction) VALUES(?, ?, ?)";
                     $stmt = $conn -> prepare($sql);
-                    $stmt -> bind_param('sss', $user_id, $post_id, $reaction);
+                    $stmt -> bind_param('sss', $userid, $postid, $reaction);
                     $stmt -> execute();
                     if ($stmt) {
-                        $sql = "SELECT reaction FROM reactions WHERE post_id = ?";
+                        $sql = "SELECT reaction FROM reactions WHERE postid = ?";
                         $stmt = $conn -> prepare($sql);
-                        $stmt -> bind_param('s', $post_id);
+                        $stmt -> bind_param('s', $postid);
                         $stmt -> execute();
                         $result = $stmt -> get_result();
                         if ($result) {

@@ -15,8 +15,8 @@
         }
 
         if (isset($email) && isset($password)) {
-            $sql = "SELECT id, last_name, first_name, last_name, password, profile
-            FROM users WHERE e_mail = ?";
+            $sql = "SELECT id, lastname, firstname, password, profile
+            FROM users WHERE email = ?";
 
             $stmt = $conn -> prepare($sql);
             $stmt -> bind_param('s', $email);
@@ -30,8 +30,8 @@
                         
                         $_SESSION['active'] = true;
                         $_SESSION['id'] = $row['id'];
-                        $_SESSION['first_name'] = $row['first_name'];
-                        $_SESSION['last_name'] = $row['last_name'];
+                        $_SESSION['firstname'] = $row['firstname'];
+                        $_SESSION['lastname'] = $row['lastname'];
                         $_SESSION['email'] = $email;
                         $_SESSION['profile'] = $row['profile'];
 

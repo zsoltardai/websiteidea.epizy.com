@@ -5,29 +5,29 @@
     if (!empty($_POST['content'])) {
         $content = trim($_POST['content']);
 
-        if (!empty($_POST['user_id'])) {
-            $user_id = trim($_POST['user_id']);
+        if (!empty($_POST['userid'])) {
+            $userid = trim($_POST['userid']);
 
-            $sql = "INSERT INTO posts(user_id, content) VALUES(?, ?)";
+            $sql = "INSERT INTO posts(userid, content) VALUES(?, ?)";
 
             $stmt = $conn -> prepare($sql);
-            $stmt -> bind_param('ss', $user_id, $content);
+            $stmt -> bind_param('ss', $userid, $content);
 
             $stmt -> execute();
 
             if ($stmt) {
-                $sql_select = "SELECT user_id, date, posts.id, content, profile,
+                $sql_select = "SELECT userid, date, posts.id, content, profile,
                 first_name, last_name FROM posts INNER JOIN users ON
-                posts.user_id = users.id WHERE content = ? AND user_id = ? ORDER BY date DESC LIMIT 1";
+                posts.userid = users.id WHERE content = ? AND userid = ? ORDER BY date DESC LIMIT 1";
 
                 $stmt = $conn -> prepare($sql_select);
-                $stmt -> bind_param('ss', $content, $user_id);
+                $stmt -> bind_param('ss', $content, $userid);
                 $stmt -> execute();
                 $result = $stmt -> get_result();
 
                 if (($result -> num_rows) > 0) {
                     while ($row = $result->fetch_array()) {
-                        $sql_reactions = "SELECT user_id, reaction FROM reactions WHERE post_id = ?";
+                        $sql_reactions = "SELECT userid, reaction FROM reactions WHERE post_id = ?";
                         $stmt_reactions = $conn -> prepare($sql_reactions);
                         $stmt_reactions -> bind_param('s', $row['id']);
                         $stmt_reactions -> execute();
@@ -40,12 +40,12 @@
                             while ($row_reactions = $result_reactions -> fetch_array()) {
                                 if ($row_reactions['reaction'] == 1) {
                                     $num_likes += 1;
-                                    if ($row_reactions['user_id'] == $user_id) {
+                                    if ($row_reactions['userid'] == $userid) {
                                         $thumbs_up = '<i style="font-size: 1.5rem; color: #007bff;" class="fas fa-thumbs-up"></i>';
                                     }
                                 } else if ($row_reactions['reaction'] == 0) {
                                     $num_dislikes += 1;
-                                    if ($row_reactions['user_id'] == $user_id) {
+                                    if ($row_reactions['userid'] == $userid) {
                                         $thumbs_down = '<i style="font-size: 1.5rem; color: #007bff;" class="fas fa-thumbs-down fa-1x"></i>';
                                     }
                                 }
@@ -54,7 +54,7 @@
                         echo('
                             <div class="post card">
                                 <div class="post-top">
-                                    <a class="post-name" href="profile.php?id='.$row['user_id'].'">
+                                    <a class="post-name" href="profile.php?id='.$row['userid'].'">
                                         <img src="'.$row['profile'].'" alt="profile" />
                                         <div style="line-height: 40px;">'.$row['first_name'].' '.$row['last_name'].'</div>
                                     </a>
@@ -79,7 +79,7 @@
                                                 {
                                                     post_id : "'.$row['id'].'",
                                                     reaction: 1,
-                                                    user_id : '.$user_id.'
+                                                    userid : '.$userid.'
                                                 },
                                                 function(data, status){
                                                     var num_reactions_'.$row['id'].' =  JSON.parse(data);
@@ -94,7 +94,7 @@
                                                 {
                                                     post_id : "'.$row['id'].'",
                                                     reaction: 0,
-                                                    user_id : '.$user_id.'
+                                                    userid : '.$userid.'
                                                 },
                                                 function(data, status){
                                                     var num_reactions_'.$row['id'].' =  JSON.parse(data);

@@ -15,8 +15,8 @@
         
         if ($result -> num_rows > 0) {
             while ($row = $result->fetch_array()) {
-                $first_name = $row['first_name'];
-                $last_name = $row['last_name'];
+                $firstname = $row['firstname'];
+                $lastname = $row['lastname'];
                 $profile = $row['profile'];
                 $birthday = explode('-', $row['birthday']);
                 $year = $birthday[0];
@@ -30,14 +30,14 @@
 
     if (isset($_POST['submit'])) {
 
-        $update_sql = 'UPDATE users SET first_name = ?, last_name = ?, education = ?,
+        $update_sql = 'UPDATE users SET firstname = ?, lastname = ?, education = ?,
         hometown = ? WHERE id = ?';
 
-        if (!empty(trim($_POST['first_name']))) {
-            $first_name = trim($_POST['first_name']);
+        if (!empty(trim($_POST['firstname']))) {
+            $firstname = trim($_POST['firstname']);
         }
-        if (!empty(trim($_POST['last_name']))) {
-            $last_name = trim($_POST['last_name']);
+        if (!empty(trim($_POST['lastname']))) {
+            $lastname = trim($_POST['lastname']);
         }
         if (!empty(trim($_POST['hometown']))) {
             $hometown = trim($_POST['hometown']);
@@ -45,9 +45,9 @@
         if (!empty(trim($_POST['education']))) {
             $education = trim($_POST['education']);
         }
-        if (isset($first_name) && isset($last_name) && isset($education) && isset($hometown)) {
+        if (isset($firstname) && isset($lastname) && isset($education) && isset($hometown)) {
             $stmt = $conn -> prepare($update_sql);
-            $stmt -> bind_param('sssss', $first_name, $last_name, $education, $hometown, $id);
+            $stmt -> bind_param('sssss', $firstname, $lastname, $education, $hometown, $id);
             $stmt -> execute();
             if ($stmt) {
                 $stmt -> close();
@@ -132,13 +132,13 @@
         <b>First name:</b>
     </div>
     <div class="form-group">
-        <input required type="text" class="form-control" value="<?php echo($first_name); ?>"  name="first_name">
+        <input required type="text" class="form-control" value="<?php echo($firstname); ?>"  name="firstname">
     </div>
     <div class="form-group">
         <b>Last name:</b>
     </div>
     <div class="form-group">
-        <input required type="text" class="form-control" value="<?php echo($last_name); ?>" name="last_name">
+        <input required type="text" class="form-control" value="<?php echo($lastname); ?>" name="lastname">
     </div>   
     <div class="form-group">
         <b style="margin-bottom: 20px;">Birthday:</b>

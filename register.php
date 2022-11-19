@@ -7,17 +7,17 @@
 
     $email_regex = '/^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i';
     $password_regex = '/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/';
-    $sql_for_email = "SELECT * FROM users WHERE e_mail = ?";
-    $sql_for_insert = "INSERT INTO users (first_name, last_name, birthday, e_mail, profile, password) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql_for_email = "SELECT * FROM users WHERE email = ?";
+    $sql_for_insert = "INSERT INTO users (firstname, lastname, birthday, email, profile, password) VALUES (?, ?, ?, ?, ?, ?)";
     $email_err = '';
     $profile = 'profiles/default.png';
 
     if (isset($_POST['submit'])) {
-        if (!empty(trim($_POST['first_name']))) {
-            $first_name = trim($_POST['first_name']);
+        if (!empty(trim($_POST['firstname']))) {
+            $firstname = trim($_POST['firstname']);
         }
-        if (!empty(trim($_POST['last_name']))) {
-            $last_name = trim($_POST['last_name']);
+        if (!empty(trim($_POST['lastname']))) {
+            $lastname = trim($_POST['lastname']);
         }
         if (!empty(trim($_POST['year']))) {
             if (!empty(trim($_POST['month']))) {
@@ -44,9 +44,9 @@
                 $hashed_password = password_hash(trim($_POST['password']), PASSWORD_DEFAULT);
             }
         }
-        if (isset($first_name) && isset($last_name) && isset($email) && isset($birthday) && isset($hashed_password)) {
+        if (isset($firstname) && isset($lastname) && isset($email) && isset($birthday) && isset($hashed_password)) {
             $stmt = $conn -> prepare($sql_for_insert);
-            $stmt -> bind_param('ssssss', $first_name, $last_name, $birthday, $email, $profile, $hashed_password);
+            $stmt -> bind_param('ssssss', $firstname, $lastname, $birthday, $email, $profile, $hashed_password);
             $stmt -> execute();
             if ($stmt) {
                 $stmt -> close();
@@ -195,9 +195,9 @@
                 <b>Name:</b>
             </div>
             <div class="form-group name-fields">
-                <input required id="first_name" name="first_name" type="text"
+                <input required id="first_name" name="firstname" type="text"
                     class="form-control name" placeholder="First name">
-                <input required type="text" name="last_name"
+                <input required type="text" name="lastname"
                 class="form-control name" placeholder="Last name">
             </div>
             <div class="form-group mobileview">

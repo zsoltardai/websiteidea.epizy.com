@@ -46,12 +46,12 @@
                 $(document).ready(function () {
                     $('#btnPost').click(function () {
                         var content = $("#postContent").val();
-                        var user_id = <?php echo($_SESSION['id']); ?>;
+                        var userid = <?php echo($_SESSION['id']); ?>;
                         if (content) {
                             $.post('post-writing.php',
                             {
                                 content : content,
-                                user_id : user_id
+                                userid : userid
                             },
                             function (data, status) {
                                 if (status) {
@@ -72,8 +72,8 @@
                 if (isset($_GET['submit'])) {
 
                     if (isset($_GET['text'])) {
-                        $sql = "SELECT id, first_name, last_name, profile, hometown FROM 
-                        users WHERE first_name LIKE ? OR last_name LIKE ?";
+                        $sql = "SELECT id, firstname, lastname, profile, hometown FROM 
+                        users WHERE firstname LIKE ? OR lastname LIKE ?";
                         
                         $text = trim($_GET['text']);
 
@@ -90,13 +90,13 @@
                                             <div class="left">
                                                 <a href="profile.php?id='.$row['id'].'">
                                                     <img src="'.$row['profile'].'"
-                                                    alt="'.$row['first_name'].' '.$row['last_name']."'s profile".'"
-                                                    title="'.$row['first_name'].' '.$row['last_name']."'s profile".'" />
+                                                    alt="'.$row['firstname'].' '.$row['lastname']."'s profile".'"
+                                                    title="'.$row['firstname'].' '.$row['lastname']."'s profile".'" />
                                                 </a>
                                             </div>
                                             <div class="right">
                                                 <a href="profile.php?id='.$row['id'].'">
-                                                    <b>'.$row['first_name'].' '.$row['last_name'].'</b>
+                                                    <b>'.$row['firstname'].' '.$row['lastname'].'</b>
                                                 </a>
                                                 <p><b>Hometown: </b>'.$row['hometown'].'</p>
                                             </div>
@@ -110,9 +110,9 @@
                     }
                 } else {
                     if (isset($load_posts)) {
-                        $sql_select = "SELECT user_id, date, posts.id, content, profile,
-                        first_name, last_name FROM posts INNER JOIN users ON
-                        posts.user_id = users.id ORDER BY date DESC LIMIT 25";
+                        $sql_select = "SELECT userid, date, posts.id, content, profile,
+                        firstname, lastname FROM posts INNER JOIN users ON
+                        posts.userid = users.id ORDER BY date DESC LIMIT 25";
 
                         $stmt = $conn -> prepare($sql_select);
                         $stmt -> execute();
@@ -120,7 +120,7 @@
 
                         if (($result -> num_rows) > 0) {
                             while ($row = $result->fetch_array()) {
-                                $sql_reactions = "SELECT user_id, reaction FROM reactions WHERE post_id = ?";
+                                $sql_reactions = "SELECT userid, reaction FROM reactions WHERE postid = ?";
                                 $stmt_reactions = $conn -> prepare($sql_reactions);
                                 $stmt_reactions -> bind_param('s', $row['id']);
                                 $stmt_reactions -> execute();
@@ -133,12 +133,12 @@
                                     while ($row_reactions = $result_reactions -> fetch_array()) {
                                         if ($row_reactions['reaction'] == 1) {
                                             $num_likes += 1;
-                                            if ($row_reactions['user_id'] == $_SESSION['id']) {
+                                            if ($row_reactions['userid'] == $_SESSION['id']) {
                                                 $thumbs_up = '<i style="font-size: 1.5rem; color: #007bff;" class="fas fa-thumbs-up"></i>';
                                             }
                                         } else if ($row_reactions['reaction'] == 0) {
                                             $num_dislikes += 1;
-                                            if ($row_reactions['user_id'] == $_SESSION['id']) {
+                                            if ($row_reactions['userid'] == $_SESSION['id']) {
                                                 $thumbs_down = '<i style="font-size: 1.5rem; color: #007bff;" class="fas fa-thumbs-down fa-1x"></i>';
                                             }
                                         }
@@ -147,9 +147,9 @@
                                 echo('
                                     <div class="post card">
                                         <div class="post-top">
-                                            <a class="post-name" href="profile.php?id='.$row['user_id'].'">
+                                            <a class="post-name" href="profile.php?id='.$row['userid'].'">
                                                 <img src="'.$row['profile'].'" alt="profile" />
-                                                <div style="line-height: 40px;">'.$row['first_name'].' '.$row['last_name'].'</div>
+                                                <div style="line-height: 40px;">'.$row['firstname'].' '.$row['lastname'].'</div>
                                             </a>
                                             <a href="/post.php?id='.$row['id'].'">
                                                 <div class="post-date" style="line-height: 40px;">
@@ -170,9 +170,9 @@
                                                     $("#btn_post_'.$row['id'].'_like").click(function(){
                                                         $.post("reactions.php",
                                                         {
-                                                            post_id : "'.$row['id'].'",
+                                                            postid : "'.$row['id'].'",
                                                             reaction: 1,
-                                                            user_id : '.$_SESSION['id'].'
+                                                            userid : '.$_SESSION['id'].'
                                                         },
                                                         function(data, status){
                                                             var num_reactions_'.$row['id'].' =  JSON.parse(data);
@@ -185,9 +185,9 @@
                                                       $("#btn_post_'.$row['id'].'_dislike").click(function () {
                                                         $.post("reactions.php",
                                                         {
-                                                            post_id : "'.$row['id'].'",
+                                                            postid : "'.$row['id'].'",
                                                             reaction: 0,
-                                                            user_id : '.$_SESSION['id'].'
+                                                            userid : '.$_SESSION['id'].'
                                                         },
                                                         function(data, status){
                                                             var num_reactions_'.$row['id'].' =  JSON.parse(data);
